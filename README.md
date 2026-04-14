@@ -16,4 +16,4 @@ pip install -r requirements.txt
 streamlit run app.py
 
 ## Live demo
-[Click here to try it](YOUR_STREAMLIT_LINK_HERE)
+[Click here to try it](https://expense-analyzer-id7v4tfshttqmqxxwu72iw.streamlit.app/)
