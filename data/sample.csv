@@ -1,0 +1,21 @@
+date,description,amount,category
+2024-01-03,Zomato,450,food
+2024-01-05,Metro card,200,transport
+2024-01-07,Netflix,199,entertainment
+2024-01-10,Grocery store,1200,food
+2024-01-12,Uber,350,transport
+2024-01-15,Electricity bill,800,utilities
+2024-01-18,Movie tickets,600,entertainment
+2024-01-20,Gym membership,1500,health
+2024-01-22,Swiggy,380,food
+2024-01-25,Amazon,999,shopping
+2024-02-01,Zomato,520,food
+2024-02-03,Metro card,200,transport
+2024-02-06,Grocery store,1400,food
+2024-02-09,Uber,420,transport
+2024-02-12,Netflix,199,entertainment
+2024-02-15,Electricity bill,750,utilities
+2024-02-18,Swiggy,460,food
+2024-02-20,Gym membership,1500,health
+2024-02-23,Amazon,1200,shopping
+2024-02-26,Movie tickets,400,entertainment
