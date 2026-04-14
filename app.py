@@ -12,6 +12,14 @@ st.markdown("Upload your expense CSV to get started.")
 # --- File Upload ---
 uploaded_file = st.file_uploader("Upload your expense file", type=["csv", "xlsx"])
 
+with open("data/sample.csv", "rb") as f:
+    st.download_button(
+        label="Download sample CSV to try",
+        data=f,
+        file_name="sample_expenses.csv",
+        mime="text/csv"
+    )
+
 if uploaded_file is not None:
 
     # Save uploaded file temporarily and load it
@@ -101,3 +109,17 @@ if uploaded_file is not None:
 
 else:
     st.info("No file uploaded yet. Use the uploader above or try with the sample file in the data/ folder.")
+
+
+st.divider()
+st.markdown(
+    "<div style='text-align:center; color:gray; font-size:13px;'>Built with Python, pandas, Streamlit & Plotly</div>",
+    unsafe_allow_html=True
+)
+
+try:
+    df = load_data(tmp_path)
+    st.success(f"Loaded {len(df)} transactions successfully!")
+except Exception as e:
+    st.error("Could not read this file. Make sure it has columns: date, description, amount, category.")
+    st.stop()
