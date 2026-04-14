@@ -1,17 +1,15 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+import tempfile, os
 from analyzer import load_data, get_category_totals, get_monthly_totals, get_top_transactions, get_budget_analysis
 
-# --- Page config ---
 st.set_page_config(page_title="Expense Analyzer", page_icon="💰", layout="wide")
 
 st.title("💰 Expense Analyzer & Budget Advisor")
 st.markdown("Upload your expense CSV to get started.")
 
-# --- File Upload ---
-uploaded_file = st.file_uploader("Upload your expense file", type=["csv", "xlsx"])
-
+# Sample download button
 with open("data/sample.csv", "rb") as f:
     st.download_button(
         label="Download sample CSV to try",
@@ -20,21 +18,25 @@ with open("data/sample.csv", "rb") as f:
         mime="text/csv"
     )
 
-if uploaded_file is not None:
+uploaded_file = st.file_uploader("Upload your expense file", type=["csv", "xlsx"])
 
-    # Save uploaded file temporarily and load it
-    import tempfile, os
+if uploaded_file is not None:
     suffix = ".csv" if uploaded_file.name.endswith(".csv") else ".xlsx"
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
         tmp.write(uploaded_file.read())
         tmp_path = tmp.name
 
-    df = load_data(tmp_path)
-    os.unlink(tmp_path)  # clean up temp file
+    try:
+        df = load_data(tmp_path)
+        os.unlink(tmp_path)
+    except Exception as e:
+        os.unlink(tmp_path)
+        st.error("Could not read this file. Make sure it has columns: date, description, amount, category.")
+        st.stop()
 
     st.success(f"Loaded {len(df)} transactions successfully!")
 
-    # --- Row 1: Summary numbers ---
+    # Overview metrics
     st.subheader("Overview")
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Spent", f"₹{df['amount'].sum():,.0f}")
@@ -43,7 +45,7 @@ if uploaded_file is not None:
 
     st.divider()
 
-    # --- Row 2: Charts side by side ---
+    # Charts
     col_left, col_right = st.columns(2)
 
     with col_left:
@@ -65,7 +67,7 @@ if uploaded_file is not None:
 
     st.divider()
 
-    # --- Row 3: Top transactions ---
+    # Top transactions
     st.subheader("Top 5 transactions")
     top = get_top_transactions(df)
     top['amount'] = top['amount'].apply(lambda x: f"₹{x:,.0f}")
@@ -73,7 +75,7 @@ if uploaded_file is not None:
 
     st.divider()
 
-    # --- Row 4: Budget advisor ---
+    # Budget advisor
     st.subheader("Budget advisor")
     st.markdown("Set a monthly budget for each category and see how you're doing.")
 
@@ -92,7 +94,6 @@ if uploaded_file is not None:
 
     if st.button("Analyze budget"):
         analysis = get_budget_analysis(df, budget)
-
         for _, row in analysis.iterrows():
             if row['status'] == "over":
                 st.error(
@@ -108,18 +109,11 @@ if uploaded_file is not None:
                 )
 
 else:
-    st.info("No file uploaded yet. Use the uploader above or try with the sample file in the data/ folder.")
+    st.info("No file uploaded yet. Download the sample CSV above to try it out.")
 
-
+# Footer
 st.divider()
 st.markdown(
     "<div style='text-align:center; color:gray; font-size:13px;'>Built with Python, pandas, Streamlit & Plotly</div>",
     unsafe_allow_html=True
 )
-
-try:
-    df = load_data(tmp_path)
-    st.success(f"Loaded {len(df)} transactions successfully!")
-except Exception as e:
-    st.error("Could not read this file. Make sure it has columns: date, description, amount, category.")
-    st.stop()
