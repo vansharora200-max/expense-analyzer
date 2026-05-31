@@ -1,6 +1,5 @@
 import streamlit as st
 import plotly.express as px
-import pandas as pd
 import tempfile, os
 from analyzer import load_data, get_category_totals, get_monthly_totals, get_top_transactions, get_budget_analysis
 
